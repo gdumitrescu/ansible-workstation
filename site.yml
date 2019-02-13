@@ -1,0 +1,7 @@
+#!usr/bin/env ansible-playbook
+
+- name: site
+  hosts: localhost
+
+- import_playbook: playbooks/bootstrap.yml
+- import_playbook: playbooks/install.yml

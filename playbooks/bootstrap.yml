@@ -1,0 +1,23 @@
+---
+- name: bootstrap
+  hosts: all
+
+  tasks:
+    - name: bootstrap => check homebrew is present
+      stat: "path=/usr/local/bin/brew"
+      register: homebrew_present
+
+    - name: bootstrap => install homebrew
+      command: '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
+      when: not homebrew_present.stat.exists
+
+    - name: bootstrap => update homebrew
+      homebrew:
+        update_homebrew: yes
+        state: latest
+
+    - name: bootstrap => add homebrew taps
+      homebrew_tap: "name={{ item }} state=present"
+      with_items:
+        - caskroom/cask
+        - homebrew/core

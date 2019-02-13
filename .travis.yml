@@ -1,0 +1,23 @@
+---
+sudo: required
+language: objective-c
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode10.1
+    - os: osx
+      osx_image: xcode9.4
+
+before_install:
+  - brew list --versions ansible; if [ $? -qe 0 ]; then brew upgrade ansible; else brew install ansible; fi
+
+script:
+  # syntax check
+  - "ansible-playbook -i hosts playbooks/bootstrap.yml --syntax-check"
+  - "ansible-playbook -i hosts playbooks/install.yml --syntax-check"
+  - "ansible-playbook -i hosts site.yml --syntax-check"
+
+  # playbook test
+  - "ansible-playbook -i hosts site.yml --connection=local"
+
